@@ -1,0 +1,142 @@
+.navbar {
+    background-color: #000 !important; /* preto absoluto, igual à sua logo */
+}
+
+.navbar {
+    background-color: #000; /* preto absoluto */
+}
+
+.navbar-brand img {
+    vertical-align: middle;
+}
+
+.navbar .nav-link {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #fff;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* efeito underline animado ao passar o mouse */
+.navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 0;
+    bottom: -4px;
+    background-color: #ffffff; /* cor do underline */
+    transition: width 0.3s;
+}
+
+.navbar .nav-link:hover::after {
+    width: 100%;
+}
+
+.navbar .nav-link:hover {
+    color: #ffffff; /* muda a cor do texto ao passar o mouse */
+    transform: scale(1.05); /* leve aumento */
+}
+
+/* Layout principal */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1; /* empurra o footer para baixo */
+}
+
+/* Footer com tamanho normal */
+.footer {
+    background-color: #000;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    font-size: 0.75rem;  /* tamanho padrão do footer */
+    padding: 0.75rem 0;  /* padding normal */
+    flex-shrink: 0;
+}
+
+/* Colunas centralizadas e com menos margem */
+.footer .col-md-3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0.3rem; /* menos espaço entre colunas */
+}
+
+/* Logo do footer */
+.footer .navbar-brand img {
+    width: 130px;          /* tamanho padrão */
+    margin-bottom: 0.15rem; /* margem menor entre logo e texto */
+    transition: transform 0.3s ease;
+}
+
+.footer .navbar-brand img:hover {
+    transform: scale(1.03);
+}
+
+/* Texto abaixo da logo ou redes sociais */
+.footer-text {
+    margin-top: 0.15rem; /* menos espaço acima do texto */
+    font-size: 0.75rem;
+    color: #fff;
+}
+
+/* Links do footer */
+.footer-link {
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.3rem; /* menos espaço entre links */
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1.5px;
+    left: 0;
+    bottom: -2px;
+    background-color: #ff6b6b;
+    transition: width 0.3s;
+}
+
+.footer-link:hover::after {
+    width: 100%;
+}
+
+.footer-link:hover {
+    color: #ff6b6b;
+    transform: scale(1.05);
+}
+
+/* Redes sociais com texto ao lado */
+.footer-socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-socials i {
+    font-size: 1.5rem;     /* tamanho padrão */
+    margin: 0 0.15rem;     /* menos espaço entre ícones */
+    transition: color 0.3s, transform 0.3s;
+}
+
+.footer-socials i:hover {
+    color: #ff6b6b;
+    transform: scale(1.2);
+}
+
+.footer-socials .footer-text {
+    margin-left: 0.25rem;   /* espaço menor entre ícones e texto */
+    font-size: 0.75rem;
+}
