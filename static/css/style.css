@@ -152,3 +152,15 @@ main {
 .footer a.footer-link:hover {
     color: #ccc; /* opcional: hover cinza claro */
 }
+
+.resultado {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 15px;       /* bordas arredondadas */
+    background-color: #000000; /* fundo preto */
+    color: #00ff7f;            /* texto verde neon para destaque */
+    font-weight: bold;
+    font-size: 1.4rem;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 255, 127, 0.7); /* leve brilho */
+}

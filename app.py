@@ -1,14 +1,50 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
+# Configura SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bd.sqlite'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# Modelo para armazenar IMCs
+class IMC(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(50), nullable=False)
+    peso = db.Column(db.Float, nullable=False)
+    altura = db.Column(db.Float, nullable=False)
+    imc_valor = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'<IMC {self.nome}: {self.imc_valor}>'
+
+# Cria o banco se não existir
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/imc')
+@app.route('/imc', methods=['GET', 'POST'])
 def imc():
-    return render_template('imc.html')
+    resultado = None
+    if request.method == 'POST':
+        nome = request.form['nome']
+        peso = float(request.form['peso'])
+        altura = float(request.form['altura'])
+        
+        imc_valor = round(peso / (altura ** 2), 2)
+        resultado = imc_valor
+        
+        # Salva no banco de dados
+        novo = IMC(nome=nome, peso=peso, altura=altura, imc_valor=imc_valor)
+        db.session.add(novo)
+        db.session.commit()
+    
+    return render_template('imc.html', resultado=resultado)
 
 if __name__ == '__main__':
     app.run(debug=True)
