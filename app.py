@@ -16,6 +16,7 @@ class IMC(db.Model):
     peso = db.Column(db.Float, nullable=False)
     altura = db.Column(db.Float, nullable=False)
     imc_valor = db.Column(db.Float, nullable=False)
+    imc_classificacao = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
         return f'<IMC {self.nome}: {self.imc_valor}>'
@@ -37,10 +38,27 @@ def imc():
         altura = float(request.form['altura'])
         
         imc_valor = round(peso / (altura ** 2), 2)
-        resultado = imc_valor
+        imc_classificacao = ""
+
+        if imc_valor < 18.5:
+            imc_classificacao = "Magreza"
+
+        elif 18.5 <= imc_valor <= 24.9:
+            imc_classificacao = "Normal"
+
+        elif 25.0 <= imc_valor <= 29.9:
+            imc_classificacao = "Sobrepeso(I)"
         
+        elif 30.0 <= imc_valor <= 39.9:
+            imc_classificacao = "Obesidade(II)"
+        
+        else:
+            imc_classificacao = "Obesidade Grave(III)"
+
+        resultado = f'{imc_valor} - {imc_classificacao}'
+
         # Salva no banco de dados
-        novo = IMC(nome=nome, peso=peso, altura=altura, imc_valor=imc_valor)
+        novo = IMC(nome=nome, peso=peso, altura=altura, imc_valor=imc_valor, imc_classificacao=imc_classificacao)
         db.session.add(novo)
         db.session.commit()
     
