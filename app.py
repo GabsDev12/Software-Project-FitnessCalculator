@@ -21,10 +21,6 @@ class IMC(db.Model):
     def __repr__(self):
         return f'<IMC {self.nome}: {self.imc_valor}>'
 
-# Cria o banco se não existir
-with app.app_context():
-    db.create_all()
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -67,6 +63,27 @@ def imc():
 @app.route('/tmb')
 def tmb():
     return render_template('tmb.html')
+
+# Tabela armazenas TMB
+
+class TMB(db.Model):
+
+    __tablename__ = "tmb"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(50), nullable=False)
+    sexo = db.Column(db.String(40), nullable=False)
+    idade = db.Column(db.Integer, nullable=False)
+    peso = db.Column(db.Float, nullable=False)
+    altura = db.Column(db.Float, nullable=False)
+    tmb_valor = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'<TMB {self.nome}: {self.tmb_valor}>'
+
+# Cria o banco se não existir
+with app.app_context():
+    db.create_all()
 
 if __name__ == '__main__':
     app.run(debug=True)
