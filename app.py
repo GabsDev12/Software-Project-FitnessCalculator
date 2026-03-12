@@ -64,5 +64,9 @@ def imc():
     
     return render_template('imc.html', resultado=resultado)
 
+@app.route('/tmb')
+def tmb():
+    return render_template('tmb.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
