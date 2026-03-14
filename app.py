@@ -60,10 +60,6 @@ def imc():
     
     return render_template('imc.html', resultado=resultado)
 
-@app.route('/tmb')
-def tmb():
-    return render_template('tmb.html')
-
 # Tabela armazenas TMB
 
 class TMB(db.Model):
@@ -80,6 +76,31 @@ class TMB(db.Model):
 
     def __repr__(self):
         return f'<TMB {self.nome}: {self.tmb_valor}>'
+    
+@app.route('/tmb', methods=['GET', 'POST'])
+def tmb():
+    tmb_valor = None
+    if request.method == 'POST':
+        nome = request.form['nome']
+        sexo = request.form['sexo']
+        peso = float(request.form['peso'])
+        altura = int(request.form['altura'])
+        idade = int(request.form['idade'])
+    
+        if sexo == 'masculino':
+            tmb_valor = (10 * peso) + (6.25 * altura) - (5 * idade) + 5
+
+        elif sexo == 'feminino':
+            tmb_valor = (10 * peso) + (6.25 * altura) - (5 * idade) - 161
+    
+        else:
+            tmb_valor = None
+
+        novo = TMB(nome=nome, sexo=sexo, idade=idade, peso=peso, altura=altura, tmb_valor=tmb_valor)
+        db.session.add(novo)
+        db.session.commit()
+
+    return render_template('tmb.html', tmb_valor=tmb_valor)
 
 # Cria o banco se não existir
 with app.app_context():
