@@ -79,7 +79,14 @@ class TMB(db.Model):
     
 @app.route('/tmb', methods=['GET', 'POST'])
 def tmb():
+
     tmb_valor = None
+    ft_sedentario = None
+    ft_leve = None
+    ft_moderado = None
+    ft_muito_ativo = None
+    ft_extremo_ativo = None
+
     if request.method == 'POST':
         nome = request.form['nome']
         sexo = request.form['sexo']
@@ -100,7 +107,13 @@ def tmb():
         db.session.add(novo)
         db.session.commit()
 
-    return render_template('tmb.html', tmb_valor=tmb_valor)
+        ft_sedentario = round(tmb_valor * 1.2)
+        ft_leve = round(tmb_valor * 1.375)
+        ft_moderado = round(tmb_valor * 1.55)
+        ft_muito_ativo = round(tmb_valor * 1.725)
+        ft_extremo_ativo = round(tmb_valor * 1.9)
+
+    return render_template('tmb.html', tmb_valor=tmb_valor, ft_sedentario=ft_sedentario, ft_leve=ft_leve, ft_moderado=ft_moderado, ft_muito_ativo=ft_muito_ativo, ft_extremo_ativo=ft_extremo_ativo)
 
 # Cria o banco se não existir
 with app.app_context():
