@@ -115,6 +115,23 @@ def tmb():
 
     return render_template('tmb.html', tmb_valor=tmb_valor, ft_sedentario=ft_sedentario, ft_leve=ft_leve, ft_moderado=ft_moderado, ft_muito_ativo=ft_muito_ativo, ft_extremo_ativo=ft_extremo_ativo)
 
+@app.route('/agua', methods=['GET', 'POST'])
+def agua():
+
+    peso = None
+    fator_atividade = None
+    fator_climatico = None
+    idade = None
+    Sexo = None
+
+    if request.method == 'POST':
+        return None
+
+
+    return render_template('agua.html')
+
+
+
 # Cria o banco se não existir
 with app.app_context():
     db.create_all()
