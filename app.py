@@ -115,22 +115,105 @@ def tmb():
 
     return render_template('tmb.html', tmb_valor=tmb_valor, ft_sedentario=ft_sedentario, ft_leve=ft_leve, ft_moderado=ft_moderado, ft_muito_ativo=ft_muito_ativo, ft_extremo_ativo=ft_extremo_ativo)
 
+class Agua(db.Model):
+
+    __tablename__ = "Table_agua"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(50), nullable=False)
+    sexo = db.Column(db.String(40), nullable=False)
+    idade = db.Column(db.Integer, nullable=False)
+    peso = db.Column(db.Float, nullable=False)
+    fator_atividade = db.Column(db.String(40), nullable=False)
+    fator_climatico = db.Column(db.String(40), nullable=False)
+    consumo_agua = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'<Consumo Agua {self.nome}: {self.consumo_agua}>'
+
 @app.route('/agua', methods=['GET', 'POST'])
 def agua():
 
+    # Definindo váriáveis
+    copos_agua = None
+    consumo_agua = None
+
     peso = None
+
     fator_atividade = None
+
     fator_climatico = None
+
     idade = None
-    Sexo = None
+    fator_idade = None
+
+    sexo = None
+    fator_sexo = None
+
+    # Associando valores do formulário às variáveis
 
     if request.method == 'POST':
-        return None
+        nome = request.form['nome']
+        sexo = request.form['sexo']
+        peso = float(request.form['peso'])
+        idade = int(request.form['idade'])
+        fator_atividade = request.form['fator_atividade']
+        fator_climatico = request.form['fator_climatico']
 
+        # Definindo fator de Atividade
 
-    return render_template('agua.html')
+        if fator_atividade == "sedentario":
+            fator_atividade = 0.90
+        elif fator_atividade == "levemente_ativo":
+            fator_atividade = 1
+        elif fator_atividade == "moderadamente_ativo":
+            fator_atividade = 1.15
+        elif fator_atividade == "muito_ativo":
+            fator_atividade = 1.30
+        elif fator_atividade == "atleta_intenso":
+            fator_atividade = 1.50
 
+        # Definindo fator Climático
 
+        if fator_climatico == "frio_intenso":
+            fator_climatico = 0.90
+        elif fator_climatico == "frio":
+            fator_climatico = 0.95
+        elif fator_climatico == "moderado":
+            fator_climatico = 1
+        elif fator_climatico == "calor":
+            fator_climatico = 1.08
+        elif fator_climatico == "calor_intenso":
+            fator_climatico = 1.15
+
+        # Definindo fator Idade
+
+        if idade <= 13:
+            fator_idade = 1.10
+        elif 14 <= idade <= 55:
+            fator_idade = 1.00
+        elif 56 <= idade <= 75:
+            fator_idade = 0.95
+        else:
+            fator_idade = 0.90
+
+        # Definindo fator Sexo
+
+        if sexo == "masculino":
+            fator_sexo = 1
+        else:
+            fator_sexo = 0.9
+
+        consumo_agua = peso * 35 * fator_atividade * fator_climatico * fator_idade * fator_sexo
+        consumo_agua = round(consumo_agua, 2)
+
+        copos_agua = round(consumo_agua / 250)
+
+        novo = Agua(nome=nome, sexo=sexo, peso=peso, idade=idade, fator_atividade=fator_atividade, fator_climatico=fator_climatico, consumo_agua=consumo_agua)
+        db.session.add(novo)
+        db.session.commit()
+
+    return render_template('agua.html', consumo_agua=consumo_agua, copos_agua=copos_agua)
 
 # Cria o banco se não existir
 with app.app_context():
