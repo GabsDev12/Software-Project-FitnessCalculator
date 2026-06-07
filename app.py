@@ -27,7 +27,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/imc', methods=['GET', 'POST'])
-def imc():
+def calcular_imc():
     resultado = None
     if request.method == 'POST':
         nome = request.form['nome']
@@ -79,7 +79,7 @@ class TMB(db.Model):
         return f'<TMB {self.nome}: {self.tmb_valor}>'
     
 @app.route('/tmb', methods=['GET', 'POST'])
-def tmb():
+def calcular_tmb():
 
     tmb_valor = None
     ft_sedentario = None
@@ -133,7 +133,7 @@ class Agua(db.Model):
         return f'<Consumo Agua {self.nome}: {self.consumo_agua}>'
 
 @app.route('/agua', methods=['GET', 'POST'])
-def agua():
+def calcular_consumo_agua():
 
     # Definindo váriáveis
     copos_agua = None
