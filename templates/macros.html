@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Cálculo de Macronutrientes{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        background: #f4f7fb;
+    }
+
+    .main-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .fitness-header {
+        background: linear-gradient(135deg, #212529, #343a40);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .fitness-header h1 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .result-card {
+        border: none;
+        border-radius: 18px;
+        transition: all .2s ease;
+    }
+
+    .result-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .macro-icon {
+        font-size: 2rem;
+    }
+
+    .macro-value {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .calorie-box {
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        color: white;
+        border-radius: 20px;
+        padding: 25px;
+    }
+
+    .calorie-value {
+        font-size: 3rem;
+        font-weight: 800;
+    }
+
+    .protein {
+        border-left: 6px solid #0d6efd;
+    }
+
+    .carb {
+        border-left: 6px solid #ffc107;
+    }
+
+    .fat {
+        border-left: 6px solid #198754;
+    }
+
+    .footer-note {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>
+
+<div class="container py-4">
+
+```
+<div class="row g-4">
+
+    <!-- Formulário -->
+    <div class="col-lg-5">
+
+        <div class="card shadow main-card">
+
+            <div class="fitness-header">
+                <h1>💪 Calculadora de Macronutrientes</h1>
+                <small>Monte sua meta nutricional diária</small>
+            </div>
+
+            <div class="card-body p-4">
+
+                <form method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">👤 Nome</label>
+                        <input type="text"
+                               name="nome"
+                               class="form-control"
+                               placeholder="Digite seu nome"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">🎯 Objetivo</label>
+
+                        <select name="objetivo"
+                                class="form-select"
+                                required>
+
+                            <option value="">Selecione</option>
+                            <option value="ganhar_peso">💪 Ganhar peso</option>
+                            <option value="manter_peso">⚖️ Manter peso</option>
+                            <option value="perder_peso">🔥 Perder peso</option>
+
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">🏋️ Peso (kg)</label>
+
+                        <input type="number"
+                               step="0.1"
+                               name="peso"
+                               class="form-control"
+                               placeholder="Ex: 81.5"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            ⚡ Gasto Calórico Total
+                        </label>
+
+                        <input type="number"
+                               step="1"
+                               name="gasto_calorico_total"
+                               class="form-control"
+                               placeholder="Ex: 2893"
+                               required>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-dark w-100 btn-lg">
+                        🚀 Calcular Macros
+                    </button>
+
+                </form>
+
+                <div class="footer-note text-center mt-4">
+                    📚 Baseado em recomendações da ISSN, ACSM,
+                    Morton et al. (2018) e Helms et al. (2014).
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    {% if meta_calorica %}
+
+    <!-- Resultados -->
+    <div class="col-lg-7">
+
+        <div class="card shadow main-card">
+
+            <div class="fitness-header">
+                <h2>📊 Seu Plano Nutricional</h2>
+            </div>
+
+            <div class="card-body p-4">
+
+                <!-- Meta Calórica -->
+
+                <div class="calorie-box text-center mb-4">
+
+                    <div>🔥 Meta Calórica Diária</div>
+
+                    <div class="calorie-value">
+                        {{ meta_calorica|round }}
+                    </div>
+
+                    <div>kcal por dia</div>
+
+                </div>
+
+                <!-- Proteína -->
+
+                <div class="card result-card protein shadow-sm mb-3">
+                    <div class="card-body text-center">
+
+                        <div class="macro-icon">🥩</div>
+
+                        <h5>Proteínas</h5>
+
+                        <div class="macro-value text-primary">
+                            {{ proteina_gramas|round }}
+                        </div>
+
+                        <small class="text-muted">
+                            gramas por dia
+                        </small>
+
+                    </div>
+                </div>
+
+                <!-- Carboidratos -->
+
+                <div class="card result-card carb shadow-sm mb-3">
+                    <div class="card-body text-center">
+
+                        <div class="macro-icon">🍞</div>
+
+                        <h5>Carboidratos</h5>
+
+                        <div class="macro-value text-warning">
+                            {{ carboidrato_gramas|round }}
+                        </div>
+
+                        <small class="text-muted">
+                            gramas por dia
+                        </small>
+
+                    </div>
+                </div>
+
+                <!-- Gorduras -->
+
+                <div class="card result-card fat shadow-sm">
+                    <div class="card-body text-center">
+
+                        <div class="macro-icon">🥑</div>
+
+                        <h5>Gorduras</h5>
+
+                        <div class="macro-value text-success">
+                            {{ gordura_gramas|round }}
+                        </div>
+
+                        <small class="text-muted">
+                            gramas por dia
+                        </small>
+
+                    </div>
+                </div>
+
+                <div class="alert alert-success mt-4 text-center">
+                    💪 Agora basta distribuir esses macronutrientes
+                    ao longo do dia para atingir seu objetivo.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+```
+
+</div>
+
+{% endblock %}

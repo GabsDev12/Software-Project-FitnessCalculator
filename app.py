@@ -11,6 +11,7 @@ db = SQLAlchemy(app)
 
 # Modelo para armazenar IMCs
 class IMC(db.Model):
+    __tablename__ = "Dados_Indicie_Massa_Corporal"
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50), nullable=False)
     peso = db.Column(db.Float, nullable=False)
@@ -64,7 +65,7 @@ def imc():
 
 class TMB(db.Model):
 
-    __tablename__ = "tmb"
+    __tablename__ = "Dados_Taxa_Metabolica_Basal"
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50), nullable=False)
@@ -117,7 +118,7 @@ def tmb():
 
 class Agua(db.Model):
 
-    __tablename__ = "Table_agua"
+    __tablename__ = "Dados_Consumo_Agua"
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50), nullable=False)
@@ -214,6 +215,94 @@ def agua():
         db.session.commit()
 
     return render_template('agua.html', consumo_agua=consumo_agua, copos_agua=copos_agua)
+
+class Macros(db.Model):
+    __tablename__ = "Dados_Macronutrientes"
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(50), nullable=False)
+    peso = db.Column(db.Float, nullable=False)
+    gasto_calorico_total = db.Column(db.Float, nullable=False)
+    meta_calorica = db.Column(db.Float, nullable=False)
+    objetivo = db.Column(db.String(40), nullable=False)
+    proteina_gramas = db.Column(db.Integer, nullable=False)
+    carboidrato_gramas = db.Column(db.Integer, nullable=False)
+    gordura_gramas = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f'<Macronutrientes {self.nome}: {self.calculo_macros}>'
+
+@app.route('/macros', methods=['GET', 'POST'])
+def calcular_macros():
+
+    # Definindo variáveis
+
+    nome = None
+    peso = None
+    gasto_calorico_total = None
+
+    meta_calorica = None
+    objetivo = None
+
+    proteina_gramas = None
+    proteina_kcal = None
+
+    carboidrato_gramas = None
+    carboidrato_kcal = None
+
+    gordura_gramas = None
+    gordura_kcal = None
+
+    # Associando valores do formulário às variáveis
+
+    if request.method == 'POST':
+        nome = request.form['nome']
+        objetivo = request.form['objetivo']
+        peso = float(request.form['peso'])
+        gasto_calorico_total = float(request.form['gasto_calorico_total'])
+
+        if objetivo == "ganhar_peso":
+            meta_calorica = gasto_calorico_total * 1.10
+            
+            proteina_gramas = round(peso * 2.0)
+            proteina_kcal = proteina_gramas * 4
+
+            gordura_gramas = round(peso * 1.0)
+            gordura_kcal = gordura_gramas * 9
+
+            carboidrato_kcal = meta_calorica - proteina_kcal - gordura_kcal
+            carboidrato_gramas = round(carboidrato_kcal/4)
+        
+        elif objetivo == "manter_peso":
+            meta_calorica = round(gasto_calorico_total * 1)
+            
+            proteina_gramas = round(peso * 1.8)
+            proteina_kcal = proteina_gramas * 4
+
+            gordura_gramas = round(peso * 0.8)
+            gordura_kcal = gordura_gramas * 9
+
+            carboidrato_kcal = meta_calorica - proteina_kcal - gordura_kcal
+            carboidrato_gramas = round(carboidrato_kcal/4)
+
+        elif objetivo == "perder_peso":
+            meta_calorica = round(gasto_calorico_total * 0.85)
+            
+            proteina_gramas = round(peso * 2.2)
+            proteina_kcal = proteina_gramas * 4
+
+            gordura_gramas = round(peso * 1.0)
+            gordura_kcal = gordura_gramas * 9
+
+            carboidrato_kcal = meta_calorica - proteina_kcal - gordura_kcal
+            carboidrato_gramas = round(carboidrato_kcal/4)
+        
+        novo = Macros(nome = nome, peso = peso, gasto_calorico_total= gasto_calorico_total, objetivo = objetivo, meta_calorica = meta_calorica, proteina_gramas = proteina_gramas, gordura_gramas = gordura_gramas, carboidrato_gramas = carboidrato_gramas)
+        db.session.add(novo)
+        db.session.commit()
+        
+    return render_template('macros.html', meta_calorica = meta_calorica, proteina_gramas = proteina_gramas, gordura_gramas = gordura_gramas, carboidrato_gramas = carboidrato_gramas)
+
+
 
 # Cria o banco se não existir
 with app.app_context():
